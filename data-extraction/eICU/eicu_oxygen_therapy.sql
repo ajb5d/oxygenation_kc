@@ -1,16 +1,16 @@
 WITH respchart AS (
 	SELECT *
-	FROM `oxygenators-209612.eicu.respiratorycharting`
+	FROM `physionet-data.eicu_crd.respiratorycharting`
 )
 
 , nursechart AS (
 	SELECT *
-	FROM `oxygenators-209612.eicu.nursecharting`
+	FROM `physionet-data.eicu_crd.nursecharting`
 )
 
 , pat AS (
 	SELECT *
-	FROM `oxygenators-209612.eicu.patient`
+	FROM `physionet-data.eicu_crd.patient`
 )
 
 
@@ -203,7 +203,7 @@ WITH respchart AS (
 			, treatmentoffset AS charttime
 			, LOWER(treatmentstring) AS string
 			, activeUponDischarge
-		FROM `oxygenators-209612.eicu.treatment`
+		FROM `physionet-data.eicu_crd.treatment`
 	)
 	WHERE charttime >= -60
 
