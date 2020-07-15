@@ -8,15 +8,15 @@ WITH vent_cohort AS (
          THEN DATETIME_ADD(icud.intime, INTERVAL 24 HOUR)
          ELSE vd.endtime
      END AS endtime
- FROM `oxygenators-209612.mimiciii_clinical.icustay_detail` icud
-    LEFT JOIN `oxygenators-209612.mimiciii_clinical.ventdurations` vd
+ FROM `physionet-data.mimiciii_derived.icustay_detail` icud
+    LEFT JOIN `physionet-data.mimiciii_derived.ventdurations` vd
     ON vd.icustay_id = icud.icustay_id
  WHERE vd.starttime BETWEEN icud.intime AND DATETIME_ADD(icud.intime, INTERVAL 1 day)
 )
 , weight AS (
 SELECT icustay_id
     , AVG(weight) AS weight
- FROM `oxygenators-209612.mimiciii_clinical.weightdurations`
+ FROM `physionet-data.mimiciii_derived.weightdurations`
  GROUP BY icustay_id
 )
  , tidal AS (
@@ -24,7 +24,7 @@ SELECT ce.icustay_id
     , safe_CAST(ce.value as FLOAT64) /wt.weight AS tidal_volume_per_weight
     --, ce.valueuom
     --, echo.weight
- FROM `oxygenators-209612.mimiciii_clinical.chartevents` ce
+ FROM `physionet-data.mimiciii_clinical.chartevents` ce
  LEFT JOIN weight wt
     ON wt.icustay_id = ce.icustay_id
  LEFT JOIN vent_cohort vc

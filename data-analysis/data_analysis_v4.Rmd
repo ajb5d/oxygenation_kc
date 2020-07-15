@@ -13,50 +13,33 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r setup_chunk, results='hide'}
-if(!require(bigrquery)) {
-  install.packages("bigrquery")
-  library("bigrquery")
-}
-
-# Project ID from Google Cloud
-project_id <- "oxygenators-209612"
-options(httr_oauth_cache=FALSE)
+library("bigrquery")
+library(mgcv)
 
 # Wrapper for running BigQuery queries.
-run_query <- function(query){
-    data <- query_exec(query, project=project_id, use_legacy_sql = FALSE, max_pages = Inf)
-    return(data)
-}
-
-# Library for fitting generalized additive models (GAMs)
-library(mgcv)
-if(!require(mgcv)) {
-  install.packages("mgcv")
-  library("mgcv")
+run_query <- function(sql){
+  #Project ID from Google Cloud
+  project_id <- "mimic-cloud.oxygenators"
+  tb <- bq_dataset_query(project_id, sql, use_legacy_sql = FALSE)
+  bq_table_download(tb)
 }
 ```
-
 
 # Read in data from eICU
 
 ```{r eval=FALSE}
-pat_MIMIC <- run_query('
-SELECT * FROM mimiciii_clinical.mimic_final_patient_results
-')
-
-pat_eICU <- run_query('
-SELECT * FROM eicu.final_patient_results
-')
+pat_MIMIC <- run_query('SELECT * FROM mimic_final_patient_results')
+pat_eICU <- run_query('SELECT * FROM final_patient_results')
 ```
 
 ```{r include=FALSE, eval=FALSE}
-save.image(file = "RData/data_analysis_v4_checkpoint1.RData")
+save.image(file = "data/data_analysis_v4_checkpoint1.RData")
 ```
 
 ```{r loadData, include=FALSE, eval=TRUE}
 # Since Google authentication cannot happen when knitting an R Markdown file,
 # I load the results from BigQuery from an RData file.
-load("RData/data_analysis_v4_checkpoint1.RData")
+load("data/data_analysis_v4_checkpoint1.RData")
 ```
 
 
@@ -313,7 +296,7 @@ TBD, but left out for now since it is only required for the supplement.
 See `eICU_data_analysis_v9.Rmd` for how it can be done.
 
 ```{r include=FALSE, eval=FALSE}
-save.image(file = "RData/data_analysis_v4_checkpoint_vent2_3.RData")
+save.image(file = "data/data_analysis_v4_checkpoint_vent2_3.RData")
 ```
 
 
@@ -495,7 +478,7 @@ sd(pat_MIMIC_subset$prop)
 
 
 ```{r include=FALSE, eval=FALSE}
-save.image(file = "RData/data_analysis_v4_checkpoint_vent3.RData")
+save.image(file = "data/data_analysis_v4_checkpoint_vent3.RData")
 ```
 
 
@@ -725,7 +708,7 @@ gam_plotProp <- function(
 
 
 ```{r include=FALSE, eval=FALSE}
-save.image("RData/data_analysis_v4_checkpoint2.RData")
+save.image("data/data_analysis_v4_checkpoint2.RData")
 ```
 
 
@@ -812,7 +795,7 @@ dev.off()
 
 
 ```{r include=FALSE, eval=FALSE}
-save.image("RData/data_analysis_v4_checkpoint3.RData")
+save.image("data/data_analysis_v4_checkpoint3.RData")
 ```
 
 
@@ -1512,7 +1495,7 @@ ATE_SE_eICU <- ATE_SE
 ```
 
 ```{r include=FALSE, eval=FALSE}
-save.image("RData/data_analysis_v4_checkpoint4.RData")
+save.image("data/data_analysis_v4_checkpoint4.RData")
 ```
 
 ```{r ATE_3}

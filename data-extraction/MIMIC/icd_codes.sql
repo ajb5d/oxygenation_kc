@@ -3,10 +3,7 @@ SELECT
 icd.hadm_id,
 SAFE_CAST(SUBSTR(icd.icd9_code, 0, 3) as INT64) AS icd_num,
 icd.icd9_code AS icd_num_string
-FROM `oxygenators-209612.mimiciii_clinical.diagnoses_icd` AS icd)
-
-
-
+FROM `physionet-data.mimiciii_clinical.diagnoses_icd` AS icd)
 SELECT
 icd_presence.hadm_id AS hadm_id,
 COUNT(CASE WHEN icd_presence.icd_num BETWEEN 001 AND 139 THEN 1 END) > 0 AS has_infectous_disease,

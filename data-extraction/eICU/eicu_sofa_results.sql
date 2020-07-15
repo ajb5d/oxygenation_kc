@@ -2,54 +2,53 @@
 --
 --Based on code by Matthieu Komorowski, with changes to allow it to be used 
 -- on BQ
-
 WITH 
 
 pat AS (
-SELECT * FROM `oxygenators-209612.eicu.patient`),
+SELECT * FROM `physionet-data.eicu_crd.patient`),
 
 lab AS (
-SELECT * FROM `oxygenators-209612.eicu.lab`),
+SELECT * FROM `physionet-data.eicu_crd.lab`),
 
 vitalperiodic AS (
-SELECT * FROM `oxygenators-209612.eicu.vitalperiodic`),
+SELECT * FROM `physionet-data.eicu_crd.vitalperiodic`),
 
 vitalaperiodic AS (
-SELECT * FROM `oxygenators-209612.eicu.vitalaperiodic`),
+SELECT * FROM `physionet-data.eicu_crd.vitalaperiodic`),
 
 infusiondrug AS (
-SELECT * FROM `oxygenators-209612.eicu.infusiondrug`),
+SELECT * FROM `physionet-data.eicu_crd.infusiondrug`),
 
 respiratorycare AS (
-SELECT * FROM `oxygenators-209612.eicu.respiratorycare`),
+SELECT * FROM `physionet-data.eicu_crd.respiratorycare`),
 
 treatment AS (
-SELECT * FROM `oxygenators-209612.eicu.treatment`),
+SELECT * FROM `physionet-data.eicu_crd.treatment`),
 
 careplangeneral AS (
-SELECT * FROM `oxygenators-209612.eicu.careplangeneral`),
+SELECT * FROM `physionet-data.eicu_crd.careplangeneral`),
 
 physicalexam AS (
-SELECT * FROM `oxygenators-209612.eicu.physicalexam`),
+SELECT * FROM `physionet-data.eicu_crd.physicalexam`),
 
 diag AS (
-SELECT * FROM `oxygenators-209612.eicu.diagnosis`),
+SELECT * FROM `physionet-data.eicu_crd.diagnosis`),
 
 chart AS (
-SELECT * FROM `oxygenators-209612.eicu.nursecharting`),
+SELECT * FROM `physionet-data.eicu_crd.nursecharting`),
 
 apsiii_raw AS (
-SELECT * FROM `oxygenators-209612.eicu.apachepatientresult`),
+SELECT * FROM `physionet-data.eicu_crd.apachepatientresult`),
 
 intakeoutput AS (
-SELECT * FROM `oxygenators-209612.eicu.intakeoutput`),
+SELECT * FROM `physionet-data.eicu_crd.intakeoutput`),
 
 respchart AS (
-SELECT * FROM `oxygenators-209612.eicu.respiratorycharting`),
+SELECT * FROM `physionet-data.eicu_crd.respiratorycharting`),
 
 
 cohort1 AS (
-SELECT * FROM `oxygenators-209612.eicu.patient`),
+SELECT * FROM `physionet-data.eicu_crd.patient`),
 
 
 t1 as -- MAP
