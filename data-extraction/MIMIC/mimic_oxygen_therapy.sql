@@ -101,7 +101,7 @@ select
         when itemid = 640 and value = 'Self Extubation' then 1
       else 0
       end as Extubated
-from `oxygenators-209612.mimiciii_clinical.chartevents` ce
+from `physionet-data.mimiciii_clinical.chartevents` ce
 where ce.value is not null and icustay_id IS NOT NULL
 -- exclude rows marked as error
 and (ce.error <> 1 OR ce.error IS NULL)--ce.error IS DISTINCT FROM 1
@@ -155,7 +155,7 @@ select
   icustay_id, starttime as charttime
   , 4 as type
   , 1 as Extubated
-from `oxygenators-209612.mimiciii_clinical.procedureevents_mv`
+from `physionet-data.mimiciii_clinical.procedureevents_mv`
 where itemid in
 (
   227194 -- "Extubation"

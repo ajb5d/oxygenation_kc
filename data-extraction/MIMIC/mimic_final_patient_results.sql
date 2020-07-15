@@ -14,13 +14,13 @@ SELECT
   admissions.deathtime as deathtime, 
   icu.intime as ICU_intime,
   admissions.ethnicity
-FROM `oxygenators-209612.mimiciii_clinical.icustays` AS icu
-INNER JOIN `oxygenators-209612.mimiciii_clinical.admissions` AS admissions
+FROM `physionet-data.mimiciii_clinical.icustays` AS icu
+INNER JOIN `physionet-data.mimiciii_clinical.admissions` AS admissions
   ON icu.hadm_id = admissions.hadm_id),
 
 
 oxygen_therapy AS (
-SELECT * FROM `oxygenators-209612.mimiciii_clinical.mimic_oxygen_therapy`
+SELECT * FROM `mimic_oxygen_therapy`
 )
 
 
@@ -42,7 +42,7 @@ SELECT * FROM `oxygenators-209612.mimiciii_clinical.mimic_oxygen_therapy`
     chart.icustay_id
     , chart.valuenum as spO2_Value
     , chart.charttime
-  FROM `oxygenators-209612.mimiciii_clinical.chartevents` AS chart
+  FROM `physionet-data.mimiciii_clinical.chartevents` AS chart
     INNER JOIN oxygen_therapy ON chart.icustay_id = oxygen_therapy.icustay_id
       -- We are only interested in measurements during oxygen therapy sessions.
       AND oxygen_therapy.vent_start <= chart.charttime
@@ -150,7 +150,7 @@ WITH FirstVRawData AS
         THEN c.valuenum * 2.54
       ELSE c.valuenum
     END AS valuenum
-  FROM `oxygenators-209612.mimiciii_clinical.chartevents` c
+  FROM `physionet-data.mimiciii_clinical.chartevents` c
   WHERE c.valuenum   IS NOT NULL
   -- exclude rows marked as error
   AND (c.error <> 1 OR c.error IS NULL)  --c.error IS DISTINCT FROM 1
@@ -209,7 +209,7 @@ FROM PivotParameters f),
 -- `patients` on our Google cloud setup has each ICU stay duplicated 7 times.
 -- We get rid of these duplicates.
 pat AS (
-	SELECT DISTINCT * FROM `oxygenators-209612.mimiciii_clinical.patients`
+	SELECT DISTINCT * FROM `physionet-data.mimiciii_clinical.patients`
 ),
 
 
@@ -219,7 +219,7 @@ pat AS (
 icu AS (SELECT *
 FROM   (SELECT *,
                Row_number() OVER(PARTITION BY icustay_id ORDER BY first_careunit) rn
-        FROM   `oxygenators-209612.mimiciii_clinical.icustays`)
+        FROM   `physionet-data.mimiciii_clinical.icustays`)
 WHERE  rn = 1)
 
 
@@ -262,17 +262,17 @@ LEFT JOIN pat
   ON icu.subject_id = pat.subject_id
 LEFT JOIN mortality_type
   ON icu.icustay_id = mortality_type.icustay_id
-LEFT JOIN `oxygenators-209612.mimiciii_clinical.icd_codes` AS icd 
+LEFT JOIN `icd_codes` AS icd 
   ON icu.hadm_id = icd.hadm_id
-LEFT JOIN `oxygenators-209612.mimiciii_clinical.elixhauser_quan` AS elix
+LEFT JOIN `physionet-data.mimiciii_derived.elixhauser_quan` AS elix
   ON icu.hadm_id = elix.hadm_id
-LEFT JOIN `oxygenators-209612.mimiciii_clinical.angus_sepsis` AS angus
+LEFT JOIN `physionet-data.mimiciii_derived.angus_sepsis` AS angus
  ON icu.hadm_id = angus.hadm_id
-LEFT JOIN `oxygenators-209612.mimiciii_clinical.apsiii` AS apsiii
+LEFT JOIN `physionet-data.mimiciii_derived.apsiii` AS apsiii
   ON icu.icustay_id = apsiii.icustay_id
-LEFT JOIN `oxygenators-209612.mimiciii_clinical.sofa` sofa 
+LEFT JOIN `physionet-data.mimiciii_derived.sofa` sofa 
   ON icu.icustay_id = SOFA.icustay_id
-LEFT JOIN `oxygenators-209612.mimiciii_clinical.mechanical_ventilative_volume` mech_vent 
+LEFT JOIN `mechanical_ventilative_volume` mech_vent 
   ON icu.icustay_id = mech_vent.icustay_id
 LEFT JOIN heightweight
   ON icu.icustay_id = heightweight.icustay_id
